@@ -1,0 +1,47 @@
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+// author_aaron
+public class ReproductorVideoJavaFX extends Application {
+      public static void main(String[] args) {
+        launch(args);
+    }
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Reproductor de Video");
+
+        // Ruta del video (reemplaza con la ruta correcta de tu video)
+        String videoPath = "file:/ruta/del/video.mp4";
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        // Botones de control
+        javafx.scene.control.Button playButton = new javafx.scene.control.Button("Reproducir");
+        javafx.scene.control.Button pauseButton = new javafx.scene.control.Button("Pausa");
+        javafx.scene.control.Button stopButton = new javafx.scene.control.Button("Detener");
+
+        playButton.setOnAction(e -> mediaPlayer.play());
+        pauseButton.setOnAction(e -> mediaPlayer.pause());
+        stopButton.setOnAction(e -> mediaPlayer.stop());
+
+        // Diseño de la interfaz
+        javafx.scene.layout.HBox controlBox = new javafx.scene.layout.HBox(10);
+        controlBox.getChildren().addAll(playButton, pauseButton, stopButton);
+
+        javafx.scene.layout.VBox layout = new javafx.scene.layout.VBox(10);
+        layout.getChildren().addAll(mediaView, controlBox);
+
+        // Ajustes de diseño y tamaño de la ventana
+        Scene scene = new Scene(layout, 800, 600);
+        primaryStage.setScene(scene);
+
+        // Configuración del reproductor para repetir el video al finalizar
+        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
+
+        primaryStage.show();
+    }
+}
