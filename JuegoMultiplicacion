@@ -1,0 +1,96 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+// author_aaron
+
+public class JuegoMultiplicacion extends JFrame {
+    private JLabel multiplicacionLabel, resultadoLabel, intentosLabel;
+    private JTextField respuestaTextField;
+    private JButton enviarButton;
+    private int resultadoCorrecto, intentos;
+
+    public JuegoMultiplicacion() {
+        super("Juego de Multiplicación");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(300, 150);
+        setLocationRelativeTo(null); // Centra la ventana en la pantalla
+
+        multiplicacionLabel = new JLabel();
+        resultadoLabel = new JLabel("Resultado:");
+        respuestaTextField = new JTextField(10);
+        enviarButton = new JButton("Enviar");
+        intentosLabel = new JLabel("Intentos: 0");
+
+        // Configuración del diseño
+        setLayout(new GridLayout(4, 1));
+        add(multiplicacionLabel);
+        add(resultadoLabel);
+        add(respuestaTextField);
+        add(enviarButton);
+        add(intentosLabel);
+        generarNuevaMultiplicacion();
+
+        enviarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verificarRespuesta();
+            }
+        });
+
+        setVisible(true);
+    }
+
+    private void generarNuevaMultiplicacion() {
+        Random random = new Random();
+        int numero1 = random.nextInt(10) + 1;
+        int numero2 = random.nextInt(10) + 1;
+        resultadoCorrecto = numero1 * numero2;
+        multiplicacionLabel.setText(numero1 + " * " + numero2 + " = ?");
+        respuestaTextField.setText("");
+        iniciarTemporizador();
+    }
+
+    private void iniciarTemporizador() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(JuegoMultiplicacion.this,
+                        "Tiempo agotado. La respuesta era: " + resultadoCorrecto,
+                        "Tiempo agotado",
+                        JOptionPane.INFORMATION_MESSAGE);
+                generarNuevaMultiplicacion();
+            }
+        } 5000); // 5000 milisegundos = 5 segundos
+    }
+
+    private void verificarRespuesta() {
+        try {
+            int respuestaUsuario = Integer.parseInt(respuestaTextField.getText());
+            if (respuestaUsuario == resultadoCorrecto) {
+                JOptionPane.showMessageDialog(this, "¡Respuesta correcta!", "Correcto", JOptionPane.INFORMATION_MESSAGE);
+                generarNuevaMultiplicacion();
+            } 
+                else {
+                JOptionPane.showMessageDialog(this, "Respuesta incorrecta. Intenta de nuevo.", "Incorrecto", JOptionPane.ERROR_MESSAGE);
+                intentos++;
+                intentosLabel.setText("Intentos: " + intentos);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingresa un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+      public static void main(String[] args) {
+          SwingUtilities.invokeLater(new Runnable() {
+              @Override
+                public void run() {
+                  new JuegoMultiplicacion();
+            }
+        }
+    }
+}
